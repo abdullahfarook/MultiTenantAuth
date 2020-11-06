@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "multitenant"
+    }
+  },
+  "defaultProject": "multitenant",
+  "cli": {
+    "analytics": "18940b7e-e33b-42bc-97fd-dad99aa90895"
+  }
 }

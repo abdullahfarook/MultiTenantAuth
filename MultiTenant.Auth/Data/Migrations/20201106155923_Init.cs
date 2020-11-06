@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MultiTenantAuth.Data.Migrations
+namespace MultiTenantAuth.Migrations
 {
     public partial class Init : Migration
     {
@@ -211,7 +211,9 @@ namespace MultiTenantAuth.Data.Migrations
                     CanonicalName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedCanonicalName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(maxLength: 256, nullable: true)
+                    Name = table.Column<string>(maxLength: 256, nullable: true),
+                    DisplayName = table.Column<string>(nullable: true),
+                    Logo = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

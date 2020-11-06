@@ -14,6 +14,7 @@ namespace MultiTenantAuth
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
+                new IdentityResources.Email(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Address(),
                 new IdentityResource(
@@ -35,7 +36,14 @@ namespace MultiTenantAuth
             {
                 new ApiScope(
                     "imagegalleryapi",
-                    "Image Gallery API scope")
+                    "Image Gallery API scope"),
+                new ApiScope()
+                {
+                    Name = "jp_api.is4",
+                    DisplayName = "OAuth2 Server",
+                    Description = "Manage mode to IS4",
+                    Required = true
+                }
             };
 
 
@@ -47,12 +55,58 @@ namespace MultiTenantAuth
                     new[] { "role" })
                     {
                         Scopes = { "imagegalleryapi"}
+                    },
+                new ApiResource
+                {
+                    Name = "jp_api",
+                    DisplayName = "JP API",
+                    Description = "OAuth2 Server Management Api",
+                    ApiSecrets = { new Secret("Q&tGrEQMypEk.XxPU:%bWDZMdpZeJiyMwpLv4F7d**w9x:7KuJ#fy,E8KPHpKz++".Sha256()) },
+
+                    UserClaims =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "is4-rights",
+                        "username",
+                        "role"
+                    },
+                    Scopes = { "jp_api.is4" }
                     }
                 };
 
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
+                new Client
+                {
+
+                    ClientId = "IS4-Admin",
+                    ClientName = "IS4-Admin",
+                    ClientUri = "http://localhost:4200",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireConsent = true,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireClientSecret = false,
+                    RequirePkce = true,
+                    AllowPlainTextPkce = false,
+                    RedirectUris = new[] {
+                        $"http://localhost:4200/login-callback",
+                        $"http://localhost:4200/silent-refresh.html"
+                    },
+                    AllowedCorsOrigins = { "http://localhost:4200"},
+                    PostLogoutRedirectUris = {$"http://localhost:4200",},
+                    LogoUri = "https://jpproject.blob.core.windows.net/images/jplogo.png",
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "role",
+                        "jp_api.is4"
+                    }
+                },
                 new Client
                 {
                     AccessTokenType = AccessTokenType.Reference,
@@ -65,11 +119,11 @@ namespace MultiTenantAuth
                     RequirePkce = true,
                     RedirectUris = new List<string>()
                     {
-                        "https://localhost:44389/signin-oidc"
+                        "https://localhost:4200/signin-oidc"
                     },
                     PostLogoutRedirectUris = new List<string>()
                     {
-                        "https://localhost:44389/signout-callback-oidc"
+                        "https://localhost:4200/signout-callback-oidc"
                     },
                     AllowedScopes =
                     {

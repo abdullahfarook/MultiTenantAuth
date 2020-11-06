@@ -47,7 +47,7 @@ namespace MultiTenantAuth
                 }
 
                 var host = CreateHostBuilder(args).Build();
-                //seed = true;
+                seed = true;
                 if (seed)
                 {
                     Log.Information("Seeding database...");
@@ -55,7 +55,7 @@ namespace MultiTenantAuth
                     var connectionString = config.GetConnectionString("DefaultConnection");
                     SeedData.EnsureSeedData(connectionString, host.Services);
                     Log.Information("Done seeding database.");
-                    return 0;
+                    //return 0;
                 }
 
                 Log.Information("Starting host...");

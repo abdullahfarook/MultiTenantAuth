@@ -5,9 +5,12 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MultiTenancyServer;
 using MultiTenantAuth.Data;
@@ -182,7 +185,58 @@ namespace MultiTenantAuth
                 {
                     Log.Debug("bob already exists");
                 }
+
+                EnsureSeedIdentityServerData(context).Wait();
+
             }
         }
+        /// <summary>
+        /// Generate default clients, identity and api resources
+        /// </summary>
+        private static async Task EnsureSeedIdentityServerData(ApplicationDbContext context)
+        {
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Config.Clients)
+                {
+                    await context.Clients.AddAsync(client.ToEntity());
+                }
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                var identityResources = Config.Ids;
+
+                foreach (var resource in identityResources)
+                {
+                    await context.IdentityResources.AddAsync(resource.ToEntity());
+                }
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in Config.ApiResources)
+                {
+                    await context.ApiResources.AddAsync(resource.ToEntity());
+                }
+
+                await context.SaveChangesAsync();
+            }
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var resource in Config.ApiScopes)
+                {
+                    await context.ApiScopes.AddAsync(resource.ToEntity());
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
     }
+
 }
