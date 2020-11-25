@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ImageGallery.API.Migrations
+namespace MultiTenant.Api.Migrations
 {
     public partial class InitialMigration : Migration
     {

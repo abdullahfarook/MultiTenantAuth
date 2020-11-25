@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ImageGallery.API.Migrations
+namespace MultiTenant.Api.Migrations
 {
     public partial class SeedDatabaseMigration : Migration
     {

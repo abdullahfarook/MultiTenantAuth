@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImageGallery.Model
+namespace MultiTenant.Api.Model
 {
     public class Image
     {      

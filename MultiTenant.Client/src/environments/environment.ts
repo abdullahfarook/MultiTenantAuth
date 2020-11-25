@@ -5,9 +5,18 @@
 
 export const environment = {
   production: false,
-  ResourceServer: 'https://localhost:5000/',
+
+  ResourceServer: 'https://tenant1.tenants.local:5000/',
+
+
+  // ResourceServer: 'https://tenants.local:5000/tenant2',
+  // IssuerUri: 'https://localhost:5000',
+  IssuerUri: 'https://tenant1.tenants.localhost:5000',
+
+  // ResourceServer: 'https://localhost:5000/',
+
+
   //IssuerUri: "https://localhost:5000",
-  IssuerUri: 'https://localhost:5000',
   RequireHttps: false,
   Uri: 'http://localhost:4200',
   defaultTheme: 'E',

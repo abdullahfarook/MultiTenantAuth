@@ -21,10 +21,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        this.stream = this.authService.canActivateProtectedRoutes$.subscribe(yes => {
-            if (yes)
-                this.router.navigate(['/home']);
-        });
+      this.stream = this.authService.canActivateProtectedRoutes$.subscribe(
+        (yes) => {
+          if (yes) this.router.navigate(['/home']);
+        }
+      );
+      // this.authService.login('/login-callback');
     }
 
     public ngOnDestroy() {

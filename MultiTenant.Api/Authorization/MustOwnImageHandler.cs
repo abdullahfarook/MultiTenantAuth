@@ -1,14 +1,12 @@
-﻿using ImageGallery.API.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using MultiTenant.Api.Services;
 
-namespace ImageGallery.API.Authorization
+namespace MultiTenant.Api.Authorization
 {
     public class MustOwnImageHandler : AuthorizationHandler<MustOwnImageRequirement>
     {
@@ -35,7 +33,7 @@ namespace ImageGallery.API.Authorization
                 return Task.CompletedTask;
             }
 
-            var ownerId = context.User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            var ownerId = context.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
             if (!_galleryRepository.IsImageOwner(imageIdAsGuid, ownerId))
             {

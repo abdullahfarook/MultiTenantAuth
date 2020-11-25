@@ -78,7 +78,10 @@ export class AuthService {
 
     this.oauthService.setupAutomaticSilentRefresh();
   }
-
+  public log(val){
+    debugger;
+    console.log(this.oauthService.getAccessToken());
+  }
   public runInitialLoginSequence(): Promise<void> {
     if (location.hash) {
       console.log('Encountered hash fragment, plotting as table...');

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
-namespace ImageGallery.API.Entities
+namespace MultiTenant.Api.Entities
 {
     public class GalleryContext : DbContext
     {

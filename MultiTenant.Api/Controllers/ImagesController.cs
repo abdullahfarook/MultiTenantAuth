@@ -1,19 +1,19 @@
-﻿using AutoMapper;
-using ImageGallery.API.Services;
-using ImageGallery.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using MultiTenant.Api.Model;
+using MultiTenant.Api.Services;
 
-namespace ImageGallery.API.Controllers
+namespace MultiTenant.Api.Controllers
 {
     [Route("api/images")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class ImagesController : ControllerBase
     {
         private readonly IGalleryRepository _galleryRepository;
@@ -33,11 +33,24 @@ namespace ImageGallery.API.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
+        [HttpGet("/info")]
+        public IActionResult GetInfo()
+        {
+            return Ok(User.Claims.Select(x=> x.Issuer));
+        }
+
         [HttpGet()]
         public IActionResult GetImages()
         {
             var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            
+            var images = new List<Entities.Image>();
+            images.Add(new Entities.Image()
+            {
+                FileName = "Jpjp",
+                Id = Guid.NewGuid(),
+                OwnerId = ownerId,
+            });
+            return Ok(images);
             // get from repo
             var imagesFromRepo = _galleryRepository.GetImages(ownerId);
 

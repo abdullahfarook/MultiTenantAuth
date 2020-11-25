@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "bind":"ng serve --host tenant1.tenants.local --port 4200 --open --disable-host-check",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",

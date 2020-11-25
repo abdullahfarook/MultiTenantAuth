@@ -1,8 +1,8 @@
-﻿using ImageGallery.API.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using MultiTenant.Api.Entities;
 
-namespace ImageGallery.API.Services
+namespace MultiTenant.Api.Services
 {
     public interface IGalleryRepository
     {

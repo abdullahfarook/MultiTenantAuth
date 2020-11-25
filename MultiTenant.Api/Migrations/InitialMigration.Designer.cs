@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using ImageGallery.API.Entities;
+using MultiTenant.Api.Entities;
 
-namespace ImageGallery.API.Migrations
+namespace MultiTenant.Api.Migrations
 {
     [DbContext(typeof(GalleryContext))]
     [Migration("20170306141842_InitialMigration")]

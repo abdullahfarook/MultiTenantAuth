@@ -18,6 +18,9 @@
     <PackageReference Include="MultiTenancyServer.AspNetCore" Version="2.0.0-beta2" />
     <PackageReference Include="MultiTenancyServer.EntityFrameworkCore" Version="2.0.0-beta2" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="6.0.0" />
+    <PackageReference Include="Serilog.Exceptions.MsSqlServer" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
   </ItemGroup>
   
   <!--<ItemGroup>
@@ -25,4 +28,7 @@
     <ProjectReference Include="..\..\MultiTenancyServer\src\Core\MultiTenancyServer.csproj" />
     <ProjectReference Include="..\..\MultiTenancyServer\src\EFCore\MultiTenancyServer.EntityFrameworkCore.csproj" />
   </ItemGroup>-->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug' ">
+    <None Update="kestrel.pfx" CopyToOutputDirectory="PreserveNewest" Condition="Exists('kestrel.pfx')" />
+  </ItemGroup>
 </Project>

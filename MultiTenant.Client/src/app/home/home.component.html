@@ -1,0 +1,11 @@
+<select (change)="changeTenant($event.target.value)">
+    <option *ngFor="let tenant of tenants; let i = index"
+            [value]="i">{{tenant.name}}</option>
+</select>
+<button (click)="getInfo()"> Info</button>
+<button (click)="getImages()"> GetImages</button>
+<h1>Result</h1>
+<br />
+<span *ngIf="error"
+      style="color: red;">{{error}}</span>
+{{result | json}}

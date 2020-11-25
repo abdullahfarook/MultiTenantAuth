@@ -18,16 +18,20 @@ namespace MultiTenantAuth
     {
         public static int Main(string[] args)
         {
+            var configurtation = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Default", LogEventLevel.Warning)
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-                .MinimumLevel.Override("System", LogEventLevel.Warning)
-                .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.EntityFrameworkCore.SqlServer", LogEventLevel.Information)
-                .Enrich.FromLogContext()
+                //.MinimumLevel.Debug()
+                //.MinimumLevel.Override("Default", LogEventLevel.Debug)
+                //.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                //.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+                //.MinimumLevel.Override("System", LogEventLevel.Warning)
+                //.MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                //.MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
+                //.MinimumLevel.Override("Microsoft.EntityFrameworkCore.SqlServer", LogEventLevel.Information)
+                .ReadFrom.Configuration(configurtation)
+                //.Enrich.FromLogContext()
                 // uncomment to write to Azure diagnostics stream
                 //.WriteTo.File(
                 //    @"D:\home\LogFiles\Application\identityserver.txt",
@@ -35,7 +39,7 @@ namespace MultiTenantAuth
                 //    rollOnFileSizeLimit: true,
                 //    shared: true,
                 //    flushToDiskInterval: TimeSpan.FromSeconds(1))
-                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
+                //.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
 
             try

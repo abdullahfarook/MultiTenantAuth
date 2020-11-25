@@ -39,7 +39,7 @@ namespace MultiTenantAuth
                     "Image Gallery API scope"),
                 new ApiScope()
                 {
-                    Name = "jp_api.is4",
+                    Name = "jp_api",
                     DisplayName = "OAuth2 Server",
                     Description = "Manage mode to IS4",
                     Required = true
@@ -72,7 +72,7 @@ namespace MultiTenantAuth
                         "username",
                         "role"
                     },
-                    Scopes = { "jp_api.is4" }
+                    Scopes = { "jp_api" }
                     }
                 };
 
@@ -104,7 +104,7 @@ namespace MultiTenantAuth
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "role",
-                        "jp_api.is4"
+                        "jp_api"
                     }
                 },
                 new Client

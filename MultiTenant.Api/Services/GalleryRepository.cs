@@ -1,9 +1,9 @@
-﻿using ImageGallery.API.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiTenant.Api.Entities;
 
-namespace ImageGallery.API.Services
+namespace MultiTenant.Api.Services
 {
     public class GalleryRepository : IGalleryRepository, IDisposable
     {

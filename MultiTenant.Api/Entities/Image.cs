@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ImageGallery.API.Entities
+namespace MultiTenant.Api.Entities
 {
     public class Image
     {

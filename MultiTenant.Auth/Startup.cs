@@ -2,10 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System.Net;
+using System.Net.Security;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +19,8 @@ using MultiTenancyServer;
 using MultiTenantAuth.Data;
 using MultiTenantAuth.Extensions.AspIdentity;
 using MultiTenantAuth.Extensions.AspIdentity.Model;
+using MultiTenantAuth.Extensions.IdentityServer;
+using Serilog;
 using Serilog.Hosting;
 
 namespace MultiTenantAuth
@@ -37,18 +44,18 @@ namespace MultiTenantAuth
             services.AddControllersWithViews();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(connectionString).EnableSensitiveDataLogging());
-
+            NEVER_EAT_POISON_Disable_CertificateValidation();
 
             // MultiTenent
             services.AddTransient<TenantManager<Tenant>>();
             services.AddMultiTenancy<Tenant, string>()
                 // Add one or more IRequestParser (MultiTenancyServer.AspNetCore).
-                .AddSubdomainParser(".tenants.local")
+                .AddSubdomainParser(".tenants.localhost")
                 .AddPathParser("/tenants/")
                 //.AddClaimParser("tenantId")
                 .AddEntityFrameworkStore<ApplicationDbContext, Tenant, string>();
 
-
+            services.AddScoped<IProfileService, ProfileService>();
             // Add ASP.NET Core Identity
             services.AddCustomAspIdentity();
 
@@ -63,6 +70,7 @@ namespace MultiTenantAuth
 
                     // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                     options.EmitStaticAudienceClaim = true;
+                    //options.IssuerUri = "https://localhost:5000";
                 })
                 .AddAspNetIdentity<ApplicationUser>()
                 //.AddInMemoryIdentityResources(Config.IdentityResources)
@@ -81,7 +89,8 @@ namespace MultiTenantAuth
                     options.ConfigureDbContext = b =>
                         b.UseSqlite(connectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
-                });
+                }).AddProfileService<ProfileService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -98,7 +107,17 @@ namespace MultiTenantAuth
                     options.ClientSecret = "copy client secret from Google here";
                 });
         }
-
+        private static void NEVER_EAT_POISON_Disable_CertificateValidation()
+        {
+            // Disabling certificate validation can expose you to a man-in-the-middle attack
+            // which may allow your encrypted message to be read by an attacker
+            // https://stackoverflow.com/a/14907718/740639
+            ServicePointManager.ServerCertificateValidationCallback =
+                delegate
+                {
+                    return true;
+                };
+        }
         public void Configure(IApplicationBuilder app)
         {
             if (Environment.IsDevelopment())
@@ -107,6 +126,7 @@ namespace MultiTenantAuth
                 app.UseDatabaseErrorPage();
             }
 
+            app.UseSerilogRequestLogging();
             app.UseStaticFiles();
             app.UseMultiTenancy<Tenant>();
             app.UseRouting();

@@ -1,12 +1,12 @@
-﻿using ImageGallery.API.Entities;
+﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
+using MultiTenant.Api.Entities;
 
-namespace ImageGallery.API
+namespace MultiTenant.Api
 {
     public class Program
     {
