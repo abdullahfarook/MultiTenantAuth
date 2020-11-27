@@ -81,9 +81,9 @@ namespace MultiTenantAuth.Data
                 {
                     b.Ignore("Id");
                     // Add multi-tenancy support to entity.
-                    b.HasTenancy(() => _tenancyContext!.Tenant.Id, _tenancyModelState, hasIndex: false);
-                // Primary key
-                b.HasKey(r => new { r.UserId, r.RoleId,r.TenantId });
+                    //b.HasTenancy(() => _tenancyContext.Tenant.Id, _tenancyModelState, hasIndex: false);
+                    // Primary key
+                    b.HasKey(r => new { r.UserId, r.RoleId,r.TenantId });
 
                     //Remove unique index on NormalizedName.
                    b.HasIndex(r => r.UserId).IsUnique(false);

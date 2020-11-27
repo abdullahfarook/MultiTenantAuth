@@ -41,10 +41,9 @@ namespace MultiTenantAuth
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(connectionString).EnableSensitiveDataLogging());
-            NEVER_EAT_POISON_Disable_CertificateValidation();
 
             // MultiTenent
             services.AddTransient<TenantManager<Tenant>>();
@@ -75,6 +74,7 @@ namespace MultiTenantAuth
                 .AddAspNetIdentity<ApplicationUser>()
                 //.AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddAuthorizeInteractionResponseGenerator<AccountChooserResponseGenerator>()
                 //.AddInMemoryClients(Config.Clients)
                 // Add the config data from DB (clients, resources)
                 .AddConfigurationStore<ApplicationDbContext>(options =>
@@ -105,6 +105,18 @@ namespace MultiTenantAuth
                     // set the redirect URI to https://localhost:5001/signin-google
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
+                })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "https://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.ClientId = "js";
+                    options.SaveTokens = true;
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("TenantId");
                 });
         }
         private static void NEVER_EAT_POISON_Disable_CertificateValidation()

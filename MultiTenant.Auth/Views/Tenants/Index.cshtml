@@ -1,0 +1,17 @@
+﻿@model MultiTenantAuth.Extensions.AspIdentity.Model.TenantViewModel
+
+<div class="page-consent">
+   
+    <ul class="list-group">
+        @foreach (var tenant in Model.Tenants)
+        {
+            <form method="post" asp-controller="Tenants" asp-action="Select">
+                <input type="hidden" name="id" value="@tenant.Id"/>
+                <input type="hidden" name="name" value="@tenant.CanonicalName"/>
+                <input type="hidden" asp-for="ReturnUrl"/>
+                <button type="submit" class="list-group-item list-group-item-action">@tenant.Name</button>
+            </form>
+        }
+    </ul>
+   
+</div>

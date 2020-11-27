@@ -60,15 +60,15 @@ namespace MultiTenantAuth.Extensions.IdentityServer
                 {
                     context.IsActive = true;
                 }
-                else
-                {
-                    context.IsActive = false;
-                }
+                //else
+                //{
+                //    context.IsActive = false;
+                //}
             }
-            else
-            {
+            //else
+            //{
                 context.IsActive = user != null;
-            }
+            //}
         }
     }
 }

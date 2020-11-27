@@ -1,4 +1,6 @@
-﻿using MultiTenancyServer;
+﻿using System;
+using System.Collections.Generic;
+using MultiTenancyServer;
 
 namespace MultiTenantAuth.Extensions.AspIdentity.Model
 {
@@ -8,5 +10,11 @@ namespace MultiTenantAuth.Extensions.AspIdentity.Model
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Logo { get; set; }
+    }
+    public class TenantViewModel
+    {
+        public Guid TenantId { get; set; }
+        public List<Tenant> Tenants { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }
