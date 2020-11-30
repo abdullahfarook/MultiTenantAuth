@@ -1,13 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using AutoMapper;
 using IdentityModel.AspNetCore.AccessTokenValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,21 +12,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MultiTenant.Api.Authorization;
 using MultiTenant.Api.Entities;
-using MultiTenant.Api.Extension;
-using MultiTenant.Api.Extension.AuthorizationPolicy;
 using MultiTenant.Api.Services;
 
 namespace MultiTenant.Api
 {
     public class Constants
     {
-        public static string Authority { get; set; } = "https://tenants.localhost:5000";
-        //public static string Authority { get; set; } = "https://localhost:5000";
+        //public static string Authority { get; set; } = "https://tenants.localhost:5000";
+        public static string Authority { get; set; } = "https://localhost:5000";
+        public static List<string> ValidIssuers  = new List<string>
+        {
+            "https://tenants.localhost:5000"
+        };
         public static string Audience { get; set; } = "jp_api";
         public static string Secret { get; set; } = "Q&tGrEQMypEk.XxPU:%bWDZMdpZeJiyMwpLv4F7d**w9x:7KuJ#fy,E8KPHpKz++";
     }
@@ -82,6 +79,7 @@ namespace MultiTenant.Api
                     options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ValidIssuers = Constants.ValidIssuers,
                         ValidateIssuer = true,
                         IssuerValidator = ValidateIssuerWithPlaceholder
                         //IssuerValidator = IssuerValidator,
@@ -125,21 +123,26 @@ namespace MultiTenant.Api
 
         private static string ValidateIssuerWithPlaceholder(string issuer, SecurityToken token, TokenValidationParameters parameters)
         {
-            // https://thomaslevesque.com/2018/12/24/multitenant-azure-ad-issuer-validation-in-asp-net-core/
-            // Accepts any issuer of the form "https://login.microsoftonline.com/{tenantid}/v2.0",
-            // where tenantid is the tid from the token.
+
+            if (parameters.ValidIssuers.Any(x => x.ToLower().Equals(issuer.ToLower())))
+                return issuer;
+            
 
             if (token is JwtSecurityToken jwt)
             {
+                // https://thomaslevesque.com/2018/12/24/multitenant-azure-ad-issuer-validation-in-asp-net-core/
+                // Accepts any issuer of the form "https://login.microsoftonline.com/{tenantid}/v2.0",
+                // where tenantid is the tid from the token.
+
                 if (jwt.Payload.TryGetValue("tname", out var value) &&
-                    value is string tokentName)
+                    value is string tenantName)
                 {
                     //if(issuer.Contains(str.Substring(str.LastIndexOf('-') + 1);))
                     var validissuers = (parameters.ValidIssuers ?? Enumerable.Empty<string>())
                         .Append(parameters.ValidIssuer)
                         .Where(i => !string.IsNullOrEmpty(i));
 
-                    if (validissuers.Any(i => i.Insert(i.LastIndexOf("://", StringComparison.Ordinal) + 3, tokentName + '.') == issuer))
+                    if (validissuers.Any(i => i.Insert(i.LastIndexOf("://", StringComparison.Ordinal) + 3, tenantName + '.') == issuer))
                         return issuer;
                     //return "https://tenant3.tenants.localhost:5000";
                 }
