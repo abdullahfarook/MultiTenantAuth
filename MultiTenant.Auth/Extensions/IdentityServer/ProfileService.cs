@@ -33,8 +33,8 @@ namespace MultiTenantAuth.Extensions.IdentityServer
             var claims = principal.Claims.ToList();
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).Union(claims.Where(x=> x.Type=="tid"|| x.Type=="tname")).ToList();
             // Add custom claims in token here based on user properties or any other source
-            //claims.Add(new Claim("tid", _tenancyContext.Tenant?.Id ?? string.Empty));
-            //claims.Add(new Claim("tname", _tenancyContext.Tenant?.CanonicalName ?? string.Empty));
+            claims.Add(new Claim("tid", _tenancyContext.Tenant?.Id ?? string.Empty));
+            claims.Add(new Claim("tname", _tenancyContext.Tenant?.CanonicalName ?? string.Empty));
             context.IssuedClaims = claims;
         }
 
