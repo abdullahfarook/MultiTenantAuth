@@ -27,6 +27,11 @@ namespace MultiTenantAuth.Extensions.IdentityServer
                     {
                         RedirectUrl = "/Tenants"
                     };
+                if (!request.Subject.HasClaim(c => c.Type == "companyProfileInComplete"))
+                    return new InteractionResponse
+                    {
+                        RedirectUrl = "/OnBoarding"
+                    };
                 return new InteractionResponse();
             }
         }

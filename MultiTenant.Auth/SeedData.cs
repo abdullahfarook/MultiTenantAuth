@@ -10,7 +10,6 @@ using IdentityModel;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MultiTenancyServer;
 using MultiTenantAuth.Data;
@@ -45,11 +44,7 @@ namespace MultiTenantAuth
                 var tenant1 = tenantMgr.FindByCanonicalNameAsync("tenant1").Result;
                 if (tenant1 == null)
                 {
-                    tenant1 = new Tenant
-                    {
-                        CanonicalName = "tenant1",
-                        Name = "Tenant One",
-                    };
+                    tenant1 = new Tenant("tenant1", "Tenant One");
                     var result = tenantMgr.CreateAsync(tenant1).Result;
                     if (!result.Succeeded)
                     {
@@ -66,11 +61,7 @@ namespace MultiTenantAuth
                 var tenant2 = tenantMgr.FindByCanonicalNameAsync("tenant2").Result;
                 if (tenant2 == null)
                 {
-                    tenant2 = new Tenant()
-                    {
-                        CanonicalName = "tenant2",
-                        Name = "Tenant Two",
-                    };
+                    tenant2 = new Tenant("tenant2", "Tenant Two");
                     var result = tenantMgr.CreateAsync(tenant2).Result;
                     if (!result.Succeeded)
                     {
@@ -95,7 +86,7 @@ namespace MultiTenantAuth
                 context.Database.Migrate();
 
                 var userMgr = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
-                var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                 
                 // Roles configuration
                 var adminRole = "admin";
@@ -103,14 +94,14 @@ namespace MultiTenantAuth
                 var role = roleMgr.FindByNameAsync(adminRole).Result;
                 if (role == null)
                 {
-                    roleMgr.CreateAsync(new ApplicationRole(adminRole));
+                    roleMgr.CreateAsync(new ApplicationRole(adminRole)).Wait();
                     Log.Debug("admin role created");
                 }
                 var managerRole = "manager";
                 role = roleMgr.FindByNameAsync(managerRole).Result;
                 if (role == null)
                 {
-                    roleMgr.CreateAsync(new ApplicationRole(managerRole));
+                    roleMgr.CreateAsync(new ApplicationRole(managerRole)).Wait();
                     Log.Debug("manager role created");
                 }
 
@@ -140,8 +131,8 @@ namespace MultiTenantAuth
                         throw new Exception(result.Errors.First().Description);
                     }
                     Log.Debug("alice created");
-                    userMgr.AddToRoleAsync(alice, adminRole);
-                    userMgr.AddToRoleAsync(alice, managerRole);
+                    userMgr.AddToRoleAsync(alice, adminRole).Wait();
+                    userMgr.AddToRoleAsync(alice, managerRole).Wait();
 
                     userMgr.AddToRoleAsync(tenant, alice, adminRole).Wait();
                     userMgr.AddToRoleAsync(tenant, alice, managerRole).Wait();

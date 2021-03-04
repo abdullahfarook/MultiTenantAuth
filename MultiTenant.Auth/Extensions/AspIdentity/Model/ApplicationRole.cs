@@ -1,13 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace MultiTenantAuth.Extensions.AspIdentity.Model
 {
-    public sealed class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole
     {
-        public ApplicationRole(){}
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; protected set; } = new HashSet<ApplicationUserRole>();
+        public ApplicationRole()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         public ApplicationRole(string roleName):base(roleName)
         {
+            Id = Guid.NewGuid().ToString();
         }
 
         public static List<ApplicationRole> DefaultRoles => new List<ApplicationRole>

@@ -12,8 +12,9 @@ namespace MultiTenantAuth.Extensions.AspIdentity
         {
             services.AddScoped<ApplicationUserStore<ApplicationUser, Tenant>>();
             services.AddScoped<ApplicationUserClaimsPrincipalFactory>();
-            services.AddScoped<DbContext, ApplicationDbContext>();
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddScoped<ApplicationIdentityDbContext, ApplicationDbContext>();
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddUserManager<ApplicationUserManager>()
                 .AddSignInManager<ApplicationSigninManager>()

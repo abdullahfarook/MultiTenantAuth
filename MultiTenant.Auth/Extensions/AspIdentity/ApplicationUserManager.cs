@@ -9,14 +9,14 @@ using MultiTenantAuth.Extensions.AspIdentity.Model;
 
 namespace MultiTenantAuth.Extensions.AspIdentity
 {
-    public class ApplicationUserManager:UserManager<ApplicationUser>
+    public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        private readonly ApplicationUserStore<ApplicationUser,Tenant> _store;
+        private readonly ApplicationUserStore<ApplicationUser, Tenant> _store;
         public ApplicationUserManager(ApplicationUserStore<ApplicationUser, Tenant> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<ApplicationUser> passwordHasher, IEnumerable<IUserValidator<ApplicationUser>> userValidators, IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<ApplicationUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
             _store = store;
         }
-        public Task<IList<string>> GetRolesAsync(string userId, int tenantId)
+        public Task<IList<string>> GetRolesAsync(string userId, string tenantId)
         {
             var user = _store.Context.Set<ApplicationUser>().Find(userId);
             var tenant = _store.Context.Set<Tenant>().Find(tenantId);
@@ -34,7 +34,7 @@ namespace MultiTenantAuth.Extensions.AspIdentity
             return _store.GetRolesAsync(user, tenant);
         }
 
-        public async Task<IdentityResult> AddToRoleAsync(Tenant tenant,ApplicationUser user, string role)
+        public async Task<IdentityResult> AddToRoleAsync(Tenant tenant, ApplicationUser user, string role)
         {
             ThrowIfDisposed();
             var userRoleStore = GetUserRoleStore();
@@ -44,7 +44,7 @@ namespace MultiTenantAuth.Extensions.AspIdentity
             }
 
             var normalizedRole = NormalizeName(role);
-            if (await userRoleStore.IsInRoleAsync(user,tenant, normalizedRole, CancellationToken))
+            if (await userRoleStore.IsInRoleAsync(user, tenant, normalizedRole, CancellationToken))
             {
                 return await UserAlreadyInRoleError(user, role);
             }
@@ -58,7 +58,7 @@ namespace MultiTenantAuth.Extensions.AspIdentity
         }
         private ApplicationUserStore<ApplicationUser, Tenant> GetUserRoleStore()
         {
-            var cast = Store as ApplicationUserStore<ApplicationUser,Tenant>;
+            var cast = Store as ApplicationUserStore<ApplicationUser, Tenant>;
             if (cast == null)
             {
                 throw new NotSupportedException("StoreNotIUserRoleStore not supported to casting");

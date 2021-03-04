@@ -3,9 +3,7 @@
 
 
 using System.Net;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +19,6 @@ using MultiTenantAuth.Extensions.AspIdentity;
 using MultiTenantAuth.Extensions.AspIdentity.Model;
 using MultiTenantAuth.Extensions.IdentityServer;
 using Serilog;
-using Serilog.Hosting;
 
 namespace MultiTenantAuth
 {
@@ -51,7 +48,7 @@ namespace MultiTenantAuth
                 // Add one or more IRequestParser (MultiTenancyServer.AspNetCore).
                 .AddSubdomainParser(".tenants.localhost")
                 .AddPathParser("/tenants/")
-                //.AddClaimParser("tenantId")
+                .AddClaimParser("tname")
                 .AddEntityFrameworkStore<ApplicationDbContext, Tenant, string>();
 
             services.AddScoped<IProfileService, ProfileService>();
@@ -137,7 +134,7 @@ namespace MultiTenantAuth
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-
+            app.UseMultiTenancy<Tenant>();
             app.UseSerilogRequestLogging();
             app.UseStaticFiles();
             app.UseMultiTenancy<Tenant>();
