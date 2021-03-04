@@ -40,7 +40,7 @@ namespace MultiTenantAuth
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(connectionString).EnableSensitiveDataLogging());
+                options.UseSqlServer(connectionString).EnableSensitiveDataLogging());
 
             // MultiTenent
             services.AddTransient<TenantManager<Tenant>>();
@@ -54,7 +54,6 @@ namespace MultiTenantAuth
             services.AddScoped<IProfileService, ProfileService>();
             // Add ASP.NET Core Identity
             services.AddCustomAspIdentity();
-
 
             // Add IdentityServer 4 Configurations
             var builder = services.AddIdentityServer(options =>
@@ -115,17 +114,6 @@ namespace MultiTenantAuth
                     options.Scope.Add("profile");
                     options.Scope.Add("TenantId");
                 });
-        }
-        private static void NEVER_EAT_POISON_Disable_CertificateValidation()
-        {
-            // Disabling certificate validation can expose you to a man-in-the-middle attack
-            // which may allow your encrypted message to be read by an attacker
-            // https://stackoverflow.com/a/14907718/740639
-            ServicePointManager.ServerCertificateValidationCallback =
-                delegate
-                {
-                    return true;
-                };
         }
         public void Configure(IApplicationBuilder app)
         {
