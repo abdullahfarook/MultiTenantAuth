@@ -131,8 +131,8 @@ namespace MultiTenantAuth
                         throw new Exception(result.Errors.First().Description);
                     }
                     Log.Debug("alice created");
-                    userMgr.AddToRoleAsync(alice, adminRole).Wait();
-                    userMgr.AddToRoleAsync(alice, managerRole).Wait();
+                    userMgr.AddToRoleAsync(tenant,alice, adminRole).Wait();
+                    userMgr.AddToRoleAsync(tenant, alice, managerRole).Wait();
 
                     userMgr.AddToRoleAsync(tenant, alice, adminRole).Wait();
                     userMgr.AddToRoleAsync(tenant, alice, managerRole).Wait();

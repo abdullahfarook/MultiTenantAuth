@@ -40,7 +40,7 @@ namespace MultiTenantAuth
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString).EnableSensitiveDataLogging());
+                options.UseSqlite(connectionString).EnableSensitiveDataLogging());
 
             // MultiTenent
             services.AddTransient<TenantManager<Tenant>>();
